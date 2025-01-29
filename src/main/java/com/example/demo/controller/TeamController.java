@@ -4,6 +4,7 @@ import com.example.demo.dto.TeamDto;
 import com.example.demo.exception.TeamNotCreatedException;
 import com.example.demo.exception.TeamNotFoundException;
 import com.example.demo.service.TeamService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,15 +21,12 @@ public class TeamController {
     }
 
     @GetMapping
-    public List<TeamDto> getTeams() {
+    public List<TeamDto> getTeams() throws TeamNotFoundException {
         return teamService.getTeams();
     }
 
     @GetMapping(value = "/{id}")
     public TeamDto getTeamById(@PathVariable Long id) throws TeamNotFoundException {
-        if (teamService.getTeamById(id) == null) {
-            throw new TeamNotFoundException();
-        }
         return teamService.getTeamById(id);
     }
 
@@ -43,8 +41,9 @@ public class TeamController {
     }
 
     @PutMapping("/{id}")
-    public TeamDto updateTeam(@PathVariable Long id, @RequestBody TeamDto updatedTeam) {
-        return teamService.updateTeam(id, updatedTeam);
+    public ResponseEntity<TeamDto> updateTeam(@PathVariable Long id, @RequestBody TeamDto updatedTeam) throws TeamNotCreatedException {
+        TeamDto updated = teamService.updateTeam(id, updatedTeam);
+        return ResponseEntity.status(HttpStatus.CREATED).body(updated);
     }
 
     @DeleteMapping("/{id}")

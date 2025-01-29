@@ -19,18 +19,21 @@ public class TeamService {
         this.teamRepository = teamRepository;
     }
 
-    public List<TeamDto> getTeams() {
+    public List<TeamDto> getTeams() throws TeamNotFoundException {
         List<TeamEntity> teams = teamRepository.findAll();
+        if (teams.isEmpty()) {
+            throw new TeamNotFoundException();
+        }
         return toDto(teams);
 
     }
 
-    public TeamDto getTeamById(Long id) {
+    public TeamDto getTeamById(Long id) throws TeamNotFoundException {
             Optional<TeamEntity> team = teamRepository.findById(id);
             if (team.isPresent()) {
                 return toDto(team.get());
             }
-            return null; //exeption
+            throw new TeamNotFoundException();
     }
 
     public List<TeamDto> getTeamByName(String name) throws TeamNotFoundException {
@@ -42,7 +45,7 @@ public class TeamService {
     }
 
     public TeamDto createTeam(TeamDto teamDto) throws TeamNotCreatedException {
-        if (!teamRepository.existsByName(teamDto.getName())) {
+        if (teamRepository.existsByName(teamDto.getName())) {
             throw new TeamNotCreatedException();
         }
 
@@ -51,18 +54,23 @@ public class TeamService {
     }
 
 
-    public TeamDto updateTeam(Long id, TeamDto updatedTeam) {
-        Optional<TeamEntity> team = teamRepository.findById(id);
-        if (team.isPresent()) {
-            TeamEntity savedTeam = teamRepository.save(TeamEntity.builder()
-                    .id(id)
-                    .name(updatedTeam.getName())
-                    .country(updatedTeam.getCountry())
-                    .league(updatedTeam.getLeague())
-                    .build());
-            return getTeamById(savedTeam.getId());
+    public TeamDto updateTeam(Long id, TeamDto updatedTeam) throws TeamNotCreatedException {
+        if (!teamRepository.existsById(id)) {
+            throw new TeamNotCreatedException();
         }
-        return null;
+        TeamEntity savedTeam = teamRepository.save(toEntity(updatedTeam, id));
+        return toDto(savedTeam);
+//        Optional<TeamEntity> team = teamRepository.findById(id);
+//        if (team.isPresent()) {
+//            TeamEntity savedTeam = teamRepository.save(TeamEntity.builder()
+//                    .id(id)
+//                    .name(updatedTeam.getName())
+//                    .country(updatedTeam.getCountry())
+//                    .league(updatedTeam.getLeague())
+//                    .build());
+//            return getTeamById(savedTeam.getId());
+//        }
+//        return null;
     }
 
     public void deleteTeam(Long id) throws TeamNotFoundException {
@@ -79,6 +87,15 @@ public class TeamService {
                 .build();
     }
 
+    private TeamEntity toEntity(TeamDto teamDto, Long teamId) {
+        return TeamEntity.builder()
+                .id(teamId)
+                .name(teamDto.getName())
+                .country(teamDto.getCountry())
+                .league(teamDto.getLeague())
+                .build();
+    }
+
     private TeamDto toDto(TeamEntity teamEntity) {
         return TeamDto.builder()
                 .id(teamEntity.getId())
@@ -87,6 +104,7 @@ public class TeamService {
                 .league(teamEntity.getLeague())
                 .build();
     }
+
 
     private List<TeamDto> toDto(List<TeamEntity> teamEntities) {
         return teamEntities.stream()
