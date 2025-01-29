@@ -1,11 +1,14 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.*;
 
 @Entity
 @Table(name="team")
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 
 public class TeamEntity {
     @Id
@@ -16,10 +19,12 @@ public class TeamEntity {
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
+            generator = "team_sequence"
     )
     private Long id;
     private String name;
     private String league;
     private String country;
+
+
 }

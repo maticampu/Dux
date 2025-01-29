@@ -1,10 +1,12 @@
 
 CREATE TABLE IF NOT EXISTS team (
-    id INT PRIMARY KEY,
-    name VARCHAR(255),
+    id INT AUTO_INCREMENT PRIMARY KEY ,
+    name VARCHAR(255) UNIQUE,
     league VARCHAR(255),
     country VARCHAR(255)
     );
+
+CREATE SEQUENCE IF NOT EXISTS TEAM_SEQUENCE START WITH 25 INCREMENT BY 1;
 
 INSERT INTO team (id, name, league, country) VALUES
                                                  (1, 'Real Madrid', 'La Liga', 'España'),
