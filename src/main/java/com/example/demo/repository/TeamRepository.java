@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TeamRepository extends JpaRepository<TeamEntity, Long> {
 
-    @Query("Select t From TeamEntity t WHERE t.name like %:name%")
+    @Query("Select t From TeamEntity t WHERE t.name ILIKE %:name%")
     List<TeamEntity> findByName(@Param("name")String name);
 
     boolean existsByName(String name);

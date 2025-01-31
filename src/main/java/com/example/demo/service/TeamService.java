@@ -58,19 +58,11 @@ public class TeamService {
         if (!teamRepository.existsById(id)) {
             throw new TeamNotCreatedException();
         }
-        TeamEntity savedTeam = teamRepository.save(toEntity(updatedTeam, id));
-        return toDto(savedTeam);
-//        Optional<TeamEntity> team = teamRepository.findById(id);
-//        if (team.isPresent()) {
-//            TeamEntity savedTeam = teamRepository.save(TeamEntity.builder()
-//                    .id(id)
-//                    .name(updatedTeam.getName())
-//                    .country(updatedTeam.getCountry())
-//                    .league(updatedTeam.getLeague())
-//                    .build());
-//            return getTeamById(savedTeam.getId());
-//        }
-//        return null;
+        if (updatedTeam.getName() != null && updatedTeam.getCountry() != null && updatedTeam.getLeague() != null) {
+            TeamEntity savedTeam = teamRepository.save(toEntity(updatedTeam, id));
+            return toDto(savedTeam);
+        }
+       throw new TeamNotCreatedException();
     }
 
     public void deleteTeam(Long id) throws TeamNotFoundException {
