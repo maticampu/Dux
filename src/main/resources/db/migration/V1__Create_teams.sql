@@ -33,3 +33,5 @@ INSERT INTO team (id, name, league, country) VALUES
                                                  (22, 'Besiktas JK', 'Süper Lig', 'Turquía'),
                                                  (23, 'SSC Napoli', 'Serie A', 'Italia'),
                                                  (24, 'Atlético Madrid', 'La Liga', 'España');
+
+
