@@ -1,7 +1,6 @@
 package com.example.demo.config;
 
 import com.example.demo.filter.JwtRequestFilter;
-import com.example.demo.service.JwtUtilService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,8 +30,11 @@ public class WebSecurityConfig {
             .csrf( csrf -> csrf.disable() )
             .authorizeHttpRequests(authRequest ->
                     authRequest
-                            .requestMatchers("/equipos/**").authenticated()
-                            .anyRequest().permitAll()
+                            .requestMatchers("auth/**").permitAll()
+                            .requestMatchers("/doc/**").permitAll()
+                            .requestMatchers("/v3/api-docs/**").permitAll()
+                            .requestMatchers("/h2-console/**").permitAll()
+                            .anyRequest().authenticated()
             )
             .headers(headers ->headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
